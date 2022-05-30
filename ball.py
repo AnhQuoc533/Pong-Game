@@ -5,8 +5,21 @@ import random
 class Ball(turtle.Turtle):
 
     def __init__(self):
-        self.ball_icons = []
-        self.__add_icons()
+        self.move_speed = 0.02
+        self.ball_icons = [
+            'ball/baseball.gif',
+            'ball/basketball.gif',
+            'ball/billiard.gif',
+            'ball/dodgeball.gif',
+            'ball/fireball.gif',
+            'ball/football.gif',
+            'ball/golf.gif',
+            'ball/sun.gif',
+            'ball/tennis.gif',
+            'ball/volleyball.gif'
+        ]
+        for icon in self.ball_icons:
+            turtle.addshape(icon)
 
         super().__init__(random.choice(self.ball_icons))
         self.penup()
@@ -22,15 +35,6 @@ class Ball(turtle.Turtle):
 
         self.setheading(starting_angle)
 
-    def __add_icons(self):
-        import os
-
-        icons = os.listdir('ball')
-        for icon in icons:
-            ball_icon = 'ball/' + icon
-            turtle.addshape(ball_icon)
-            self.ball_icons.append(ball_icon)
-
     def move(self):
         self.forward(10)
 
@@ -39,11 +43,13 @@ class Ball(turtle.Turtle):
         if is_hit_border:
             self.setheading(360 - self.heading())
         else:
-            self.setheading(180 - self.heading())
+            self.setheading(180 - self.heading() + random.uniform(-5, 5))  # Make the reflection angle stochastic
+            self.move_speed *= 0.95
         # print('reflection:', self.heading())  # For testing
 
     def restart(self, winner: int):
         self.home()
+        self.move_speed = 0.02
         self.shape(random.choice(self.ball_icons))
 
         # Left paddle win
@@ -57,5 +63,5 @@ class Ball(turtle.Turtle):
         elif winner == 1:
             angle = random.randint(280, 440)
             while 350 < angle < 370:
-                angle = random.randint(100, 260)
+                angle = random.randint(280, 440)
             self.setheading(angle)
