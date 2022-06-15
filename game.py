@@ -161,4 +161,8 @@ class PongGame:
 
 
 if __name__ == '__main__':
-    PongGame().play()
+    try:
+        PongGame().play()
+    except Exception as e:
+        # print(e)
+        pass
