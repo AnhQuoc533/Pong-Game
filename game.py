@@ -26,7 +26,10 @@ class PongGame:
         self.__ball = Ball()
         self.r_paddle = Paddle(R_POS)
         self.l_paddle = Paddle(L_POS)
+
         self.n_rounds = self.__get_nrounds()
+        if self.n_rounds is None:
+            self.screen.bye()
 
         self.keys_pressed = {}  # Fix 2 players cannot move simultaneously
         self.__bind_key()
@@ -41,10 +44,14 @@ class PongGame:
         self.__text.write("Press 'Space' to pause the game.", **FORMAT)
 
     def __get_nrounds(self):
-        num = None
-        while num is None or int(num) != num:
+        try:
             num = self.screen.numinput('How many rounds you want to play?', 'Enter a number:', minval=1)
-        return num
+            while int(num) != num:
+                num = self.screen.numinput('How many rounds you want to play?', 'Invalid number, please try again:', minval=1)
+            return num
+
+        except TypeError:
+            return None
 
     def __bind_key(self):
         self.screen.listen()
@@ -95,6 +102,9 @@ class PongGame:
             self.is_paused = not self.is_paused
             self.__change_text()
 
+    def end(self):
+        ...
+
     def play(self):
         while True:
             self.screen.update()
@@ -120,6 +130,9 @@ class PongGame:
                     self.score.increase_score(winner)
                     if self.score.l_score + self.score.r_score == self.n_rounds:
                         self.score.finalize()
+                        self.end()
+                        self.screen.update()
+                        break
 
                     # Restart the ball
                     self.__ball.restart(winner)
@@ -137,6 +150,8 @@ class PongGame:
                 elif self.__ball.distance(self.l_paddle) < MAX_DIS and L_POS < ball_xcor < -360 and \
                         (90 < ball_angle < 270):
                     self.__ball.bounce(is_hit_border=False)
+
+        self.screen.mainloop()
 
 
 if __name__ == '__main__':
