@@ -44,10 +44,11 @@ class PongGame:
         self.__text.write("Press 'Space' to pause the game.", **FORMAT)
 
     def __get_nrounds(self):
+        title = 'How many rounds you want to play?'
         try:
-            num = self.screen.numinput('How many rounds you want to play?', 'Enter a number:', minval=1)
+            num = self.screen.numinput(title=title, prompt='Enter a number:', minval=1)
             while int(num) != num:
-                num = self.screen.numinput('How many rounds you want to play?', 'Invalid number, please try again:', minval=1)
+                num = self.screen.numinput(title=title, prompt='Invalid number, please try again:', minval=1)
             return num
 
         except TypeError:
@@ -83,7 +84,7 @@ class PongGame:
             # Restart game suggestion
             self.__text.color('tomato')
             self.__text.goto(0, -35)
-            self.__text.write("Press 'Enter' to restart the game.", align='center', font=("Courier", 15))
+            self.__text.write("Press 'Enter' to restart the game.", align='center', font=("Courier", 15, "normal"))
 
         elif self.is_paused:
             self.__text.clear()
@@ -129,6 +130,7 @@ class PongGame:
                     time.sleep(0.5)
                     winner = 0 if ball_xcor > 0 else 1
                     self.score.increase_score(winner)
+
                     if self.score.l_score + self.score.r_score == self.n_rounds:
                         self.score.finalize()
                         self.end()
@@ -151,9 +153,3 @@ class PongGame:
                 elif self.__ball.distance(self.l_paddle) < MAX_DIS and L_POS < ball_xcor < -360 and \
                         (90 < ball_angle < 270):
                     self.__ball.bounce(is_hit_border=False)
-
-        self.screen.mainloop()
-
-
-if __name__ == '__main__':
-    PongGame().play()
