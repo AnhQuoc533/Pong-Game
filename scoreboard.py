@@ -34,4 +34,20 @@ class Scoreboard(Turtle):
         self.display_score()
 
     def finalize(self):
-        ...
+        if self.l_score == self.r_score:
+            l_color = r_color = 'light salmon'
+        elif self.l_score < self.r_score:
+            l_color = 'red'
+            r_color = 'lime'
+        else:
+            r_color = 'red'
+            l_color = 'lime'
+
+        self.clear()
+
+        self.goto(-100, 210)
+        self.color(l_color)
+        self.write(self.l_score, **self.format)
+        self.setx(100)
+        self.color(r_color)
+        self.write(self.r_score, **self.format)

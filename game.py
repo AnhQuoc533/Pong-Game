@@ -8,7 +8,7 @@ L_POS = -385  # Position of left paddle
 R_POS = 375  # Position of right paddle
 BORDER = 270
 MAX_DIS = 15 + 10 * 26**(1/2)  # Maximum distance between ball and paddle
-FORMAT = {'align': 'center', 'font': ("Courier", 20)}
+FORMAT = {'align': 'center', 'font': ("Courier", 20, "normal")}
 
 
 class PongGame:
@@ -20,7 +20,7 @@ class PongGame:
         self.screen.cv._rootwindow.resizable(False, False)  # Access Tkinter function from Canvas screen
         self.screen.title('Pong Game')
         self.screen.bgpic('bg.gif')
-        self.screen.tracer(0)
+        self.screen.tracer(0)  # Turn off automatic screen update
 
         self.score = Scoreboard()
         self.__ball = Ball()
@@ -36,7 +36,7 @@ class PongGame:
 
         self.is_paused = False
         self.__text = Turtle()
-        self.__text.color('light salmon')
+        self.__text.color('tomato')
         self.__text.hideturtle()
         self.__text.speed('fastest')
         self.__text.penup()
@@ -77,12 +77,12 @@ class PongGame:
         if self.is_paused is None:
             self.__text.clear()
             self.__text.color('red')
-            self.__text.goto(0, 0)
+            self.__text.goto(0, -20)
             self.__text.write('GAME OVER!', align='center', font=("Courier", 25, "bold"))
 
             # Restart game suggestion
-            self.__text.color('white')
-            self.__text.goto(0, -18)
+            self.__text.color('tomato')
+            self.__text.goto(0, -35)
             self.__text.write("Press 'Enter' to restart the game.", align='center', font=("Courier", 15))
 
         elif self.is_paused:
@@ -98,12 +98,13 @@ class PongGame:
             self.__text.write("Press 'Space' to pause the game.", **FORMAT)
 
     def pause(self):
-        if self.__text is not None:
+        if self.is_paused is not None:
             self.is_paused = not self.is_paused
             self.__change_text()
 
     def end(self):
-        ...
+        self.is_paused = None  # Block 'pause' text appearance after game is over
+        self.__change_text()
 
     def play(self):
         while True:
