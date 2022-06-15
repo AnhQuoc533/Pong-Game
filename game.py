@@ -2,45 +2,13 @@ import time
 from turtle import Screen, Turtle
 from paddle import Paddle
 from ball import Ball
+from scoreboard import Scoreboard
 
 L_POS = -385  # Position of left paddle
 R_POS = 375  # Position of right paddle
 BORDER = 270
-MAX_DIS = 15 + 10 * 26 ** (1 / 2)  # Maximum distance between ball and paddle
+MAX_DIS = 15 + 10 * 26**(1/2)  # Maximum distance between ball and paddle
 FORMAT = {'align': 'center', 'font': ("Courier", 20)}
-
-
-class Scoreboard(Turtle):
-    format = {'align': 'center', 'font': ("Courier", 50, "bold")}
-
-    def __init__(self):
-        super().__init__()
-        self.color('white')
-        self.hideturtle()
-        self.speed('fastest')
-        self.penup()
-
-        self.l_score = self.r_score = 0
-        self.display_score()
-
-    def display_score(self):
-        self.clear()
-
-        self.goto(-100, 210)
-        self.write(self.l_score, **self.format)
-        self.setx(100)
-        self.write(self.r_score, **self.format)
-
-    def increase_score(self, winner: int):
-        # Left paddle win
-        if winner == 0:
-            self.l_score += 1
-
-        # Right paddle win
-        elif winner == 1:
-            self.r_score += 1
-
-        self.display_score()
 
 
 class PongGame:
@@ -58,6 +26,7 @@ class PongGame:
         self.__ball = Ball()
         self.r_paddle = Paddle(R_POS)
         self.l_paddle = Paddle(L_POS)
+        self.n_rounds = self.__get_nrounds()
 
         self.keys_pressed = {}  # Fix 2 players cannot move simultaneously
         self.__bind_key()
@@ -69,14 +38,20 @@ class PongGame:
         self.__text.speed('fastest')
         self.__text.penup()
         self.__text.goto(0, -255)
-        self.__text.write("Press 'Enter' to pause the game.", **FORMAT)
+        self.__text.write("Press 'Space' to pause the game.", **FORMAT)
+
+    def __get_nrounds(self):
+        num = None
+        while num is None or int(num) != num:
+            num = self.screen.numinput('How many rounds you want to play?', 'Enter a number:', minval=1)
+        return num
 
     def __bind_key(self):
         self.screen.listen()
-        self.screen.onkey(self.pause, 'Return')  # Pause game
+        self.screen.onkey(self.pause, 'space')  # Pause game
 
         keys = ['w', 's', 'W', 'S', 'Up', 'Down']
-        functions = [self.l_paddle.up, self.l_paddle.down] * 2 + [self.r_paddle.up, self.r_paddle.down]
+        functions = [self.l_paddle.up, self.l_paddle.down]*2 + [self.r_paddle.up, self.r_paddle.down]
         for key, function in zip(keys, functions):
             # Access Tkinter function from Canvas screen
             self.screen.cv.bind(f"<KeyPress-{key}>", self.__key_pressed)
@@ -92,17 +67,28 @@ class PongGame:
         self.keys_pressed[event.keysym][0] = False
 
     def __change_text(self):
-        if self.is_paused:
+        if self.is_paused is None:
             self.__text.clear()
-            self.__text.write("Press 'Enter' to continue the game.", **FORMAT)
-            self.__text.goto(0, -20)
+            self.__text.color('red')
+            self.__text.goto(0, 0)
+            self.__text.write('GAME OVER!', align='center', font=("Courier", 25, "bold"))
+
+            # Restart game suggestion
+            self.__text.color('white')
+            self.__text.goto(0, -18)
+            self.__text.write("Press 'Enter' to restart the game.", align='center', font=("Courier", 15))
+
+        elif self.is_paused:
+            self.__text.clear()
+            self.__text.write("Press 'Space' to continue the game.", **FORMAT)
+            self.__text.goto(0, -15)
             self.__text.color('brown')
-            self.__text.write("GAME PAUSED.", align='center', font=("Courier", 25, "bold"))
+            self.__text.write("GAME PAUSED.", **FORMAT)
 
         else:
             for _ in range(4):
                 self.__text.undo()
-            self.__text.write("Press 'Enter' to pause the game.", **FORMAT)
+            self.__text.write("Press 'Space' to pause the game.", **FORMAT)
 
     def pause(self):
         if self.__text is not None:
@@ -110,7 +96,6 @@ class PongGame:
             self.__change_text()
 
     def play(self):
-        # self.screen.tracer(1)  # For testing
         while True:
             self.screen.update()
             time.sleep(self.__ball.move_speed)
@@ -130,11 +115,14 @@ class PongGame:
                 # Ball is out of bound
                 ball_xcor = self.__ball.xcor()
                 if abs(ball_xcor) > 420:
+                    time.sleep(0.5)
                     winner = 0 if ball_xcor > 0 else 1
                     self.score.increase_score(winner)
-                    self.__ball.restart(winner)
+                    if self.score.l_score + self.score.r_score == self.n_rounds:
+                        self.score.finalize()
 
-                    time.sleep(0.5)
+                    # Restart the ball
+                    self.__ball.restart(winner)
                     self.screen.update()
                     time.sleep(1)
                     continue
@@ -143,19 +131,11 @@ class PongGame:
                 ball_angle = self.__ball.heading()
                 if self.__ball.distance(self.r_paddle) < MAX_DIS and 350 < ball_xcor < R_POS and \
                         (self.__ball.heading() < 90 or ball_angle > 270):
-                    # For testing
-                    # print('right', ball_xcor)
-                    # print('right', self.__ball.distance(self.r_paddle))
-                    # time.sleep(1)
                     self.__ball.bounce(is_hit_border=False)
 
                 # Detect collision with left paddle
                 elif self.__ball.distance(self.l_paddle) < MAX_DIS and L_POS < ball_xcor < -360 and \
                         (90 < ball_angle < 270):
-                    # For testing
-                    # print('left', ball_xcor)
-                    # print('left', self.__ball.distance(self.l_paddle))
-                    # time.sleep(1)
                     self.__ball.bounce(is_hit_border=False)
 
 
