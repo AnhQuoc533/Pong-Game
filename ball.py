@@ -25,7 +25,7 @@ class Ball(turtle.Turtle):
         self.penup()
 
         starting_angle = random.randint(10, 350)
-        while 80 < starting_angle < 100 or 170 < starting_angle < 190 or 260 < starting_angle < 280:
+        while 70 < starting_angle < 110 or 170 < starting_angle < 190 or 250 < starting_angle < 290:
             starting_angle = random.randint(10, 350)
 
         self.setheading(starting_angle)
@@ -49,14 +49,14 @@ class Ball(turtle.Turtle):
 
         # Left paddle win
         if winner == 0:
-            angle = random.randint(100, 260)
+            angle = random.randint(110, 250)
             while 170 < angle < 190:
-                angle = random.randint(100, 260)
+                angle = random.randint(110, 250)
             self.setheading(angle)
 
         # Right paddle win
         elif winner == 1:
-            angle = random.randint(280, 440)
+            angle = random.randint(290, 430)
             while 350 < angle < 370:
-                angle = random.randint(280, 440)
+                angle = random.randint(290, 430)
             self.setheading(angle)

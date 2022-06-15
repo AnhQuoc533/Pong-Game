@@ -107,12 +107,16 @@ class PongGame:
         self.is_paused = None  # Block 'pause' text appearance after game is over
         self.__change_text()
 
+    def reset(self):
+        self.screen.clearscreen()
+        self.__init__()
+
     def play(self):
         while True:
             self.screen.update()
             time.sleep(self.__ball.move_speed)
 
-            if not self.is_paused:
+            if self.is_paused is False:
                 # Check state of key pressed and respond manually
                 for value in self.keys_pressed.values():
                     if value[0]:
@@ -135,13 +139,14 @@ class PongGame:
                         self.score.finalize()
                         self.end()
                         self.screen.update()
-                        break
+                        self.screen.onkey(self.reset, 'Return')  # 'enter' key
 
-                    # Restart the ball
-                    self.__ball.restart(winner)
-                    self.screen.update()
-                    time.sleep(1)
-                    continue
+                    else:
+                        # Restart the ball
+                        self.__ball.restart(winner)
+                        self.screen.update()
+                        time.sleep(1)
+                        continue
 
                 # Detect collision with right paddle
                 ball_angle = self.__ball.heading()
@@ -153,3 +158,7 @@ class PongGame:
                 elif self.__ball.distance(self.l_paddle) < MAX_DIS and L_POS < ball_xcor < -360 and \
                         (90 < ball_angle < 270):
                     self.__ball.bounce(is_hit_border=False)
+
+
+if __name__ == '__main__':
+    PongGame().play()
