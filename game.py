@@ -4,6 +4,7 @@ from paddle import Paddle
 from ball import Ball
 from scoreboard import Scoreboard
 
+FPS = 60
 L_POS = -385  # Position of left paddle
 R_POS = 375  # Position of right paddle
 BORDER = 270
@@ -114,7 +115,7 @@ class PongGame:
     def play(self):
         while True:
             self.screen.update()
-            time.sleep(self.__ball.move_speed)
+            time.sleep(1/FPS)
 
             if self.is_paused is False:
                 # Check state of key pressed and respond manually
