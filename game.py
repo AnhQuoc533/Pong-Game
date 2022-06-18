@@ -37,7 +37,7 @@ class PongGame:
 
         self.is_paused = False
         self.__text = Turtle()
-        self.__text.color('tomato')
+        self.__text.color('white')
         self.__text.hideturtle()
         self.__text.speed('fastest')
         self.__text.penup()
@@ -83,7 +83,7 @@ class PongGame:
             self.__text.write('GAME OVER!', align='center', font=("Courier", 25, "bold"))
 
             # Restart game suggestion
-            self.__text.color('tomato')
+            self.__text.color('white')
             self.__text.goto(0, -35)
             self.__text.write("Press 'Enter' to restart the game.", align='center', font=("Courier", 15, "normal"))
 
@@ -114,8 +114,8 @@ class PongGame:
 
     def play(self):
         while True:
-            self.screen.update()
             time.sleep(1/FPS)
+            self.screen.update()
 
             if self.is_paused is False:
                 # Check state of key pressed and respond manually
