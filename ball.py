@@ -10,7 +10,8 @@ BALL_ICONS = [
     'ball/golf.gif',
     'ball/sun.gif',
     'ball/tennis.gif',
-    'ball/volleyball.gif'
+    'ball/volleyball.gif',
+    'ball/pea.gif'
 ]
 for icon in BALL_ICONS:
     turtle.addshape(icon)

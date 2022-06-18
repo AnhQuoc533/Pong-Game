@@ -31,13 +31,14 @@ class PongGame:
         self.n_rounds = self.__get_nrounds()
         if self.n_rounds is None:
             self.screen.bye()
+            return
 
         self.keys_pressed = {}  # Fix 2 players cannot move simultaneously
         self.__bind_key()
 
         self.is_paused = False
         self.__text = Turtle()
-        self.__text.color('tomato')
+        self.__text.color('white')
         self.__text.hideturtle()
         self.__text.speed('fastest')
         self.__text.penup()
@@ -83,7 +84,7 @@ class PongGame:
             self.__text.write('GAME OVER!', align='center', font=("Courier", 25, "bold"))
 
             # Restart game suggestion
-            self.__text.color('tomato')
+            self.__text.color('white')
             self.__text.goto(0, -35)
             self.__text.write("Press 'Enter' to restart the game.", align='center', font=("Courier", 15, "normal"))
 
@@ -112,58 +113,60 @@ class PongGame:
         self.screen.clearscreen()
         self.__init__()
 
-    def play(self):
-        while True:
+    def __mechanism(self):
+        if self.is_paused is False:
             self.screen.update()
-            time.sleep(1/FPS)
 
-            if self.is_paused is False:
-                # Check state of key pressed and respond manually
-                for value in self.keys_pressed.values():
-                    if value[0]:
-                        value[1]()
+            # Check state of key pressed and respond manually
+            for value in self.keys_pressed.values():
+                if value[0]:
+                    value[1]()
 
-                self.__ball.move()
+            self.__ball.move()
 
-                # Detect collision with wall
-                if abs(self.__ball.ycor()) > BORDER:
-                    self.__ball.bounce(is_hit_border=True)
+            # Detect collision with wall
+            if abs(self.__ball.ycor()) > BORDER:
+                self.__ball.bounce(is_hit_border=True)
 
-                # Ball is out of bound
-                ball_xcor = self.__ball.xcor()
-                if abs(ball_xcor) > 420:
-                    time.sleep(0.5)
-                    winner = 0 if ball_xcor > 0 else 1
-                    self.score.increase_score(winner)
+            # Ball is out of bound
+            ball_xcor = self.__ball.xcor()
+            if abs(ball_xcor) > 420:
+                time.sleep(0.5)
+                winner = 0 if ball_xcor > 0 else 1
+                self.score.increase_score(winner)
 
-                    if self.score.l_score + self.score.r_score == self.n_rounds:
-                        self.score.finalize()
-                        self.end()
-                        self.screen.update()
-                        self.screen.onkey(self.reset, 'Return')  # 'enter' key
+                if self.score.l_score + self.score.r_score == self.n_rounds:
+                    self.score.finalize()
+                    self.end()
+                    self.screen.update()
+                    self.screen.onkey(self.reset, 'Return')  # 'enter' key
 
-                    else:
-                        # Restart the ball
-                        self.__ball.restart(winner)
-                        self.screen.update()
-                        time.sleep(1)
-                        continue
+                else:
+                    # Restart the ball
+                    self.__ball.restart(winner)
+                    self.screen.update()
+                    time.sleep(1)
 
+            else:
                 # Detect collision with right paddle
                 ball_angle = self.__ball.heading()
-                if self.__ball.distance(self.r_paddle) < MAX_DIS and 350 < ball_xcor < R_POS and \
+                if self.__ball.distance(self.r_paddle) < MAX_DIS and R_POS-25 < ball_xcor < R_POS and \
                         (self.__ball.heading() < 90 or ball_angle > 270):
                     self.__ball.bounce(is_hit_border=False)
 
                 # Detect collision with left paddle
-                elif self.__ball.distance(self.l_paddle) < MAX_DIS and L_POS < ball_xcor < -360 and \
+                elif self.__ball.distance(self.l_paddle) < MAX_DIS and L_POS < ball_xcor < L_POS+25 and \
                         (90 < ball_angle < 270):
                     self.__ball.bounce(is_hit_border=False)
 
+        self.screen.ontimer(self.__mechanism, 1000//FPS)
+
+    def play(self):
+        self.__mechanism()
+        self.screen.mainloop()
+
 
 if __name__ == '__main__':
-    try:
-        PongGame().play()
-    except Exception as e:
-        # print(e)
-        pass
+    game = PongGame()
+    if game is not None:
+        game.play()
