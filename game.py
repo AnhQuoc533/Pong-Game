@@ -151,12 +151,12 @@ class PongGame:
 
                 # Detect collision with right paddle
                 ball_angle = self.__ball.heading()
-                if self.__ball.distance(self.r_paddle) < MAX_DIS and 350 < ball_xcor < R_POS and \
+                if self.__ball.distance(self.r_paddle) < MAX_DIS and R_POS-25 < ball_xcor < R_POS and \
                         (self.__ball.heading() < 90 or ball_angle > 270):
                     self.__ball.bounce(is_hit_border=False)
 
                 # Detect collision with left paddle
-                elif self.__ball.distance(self.l_paddle) < MAX_DIS and L_POS < ball_xcor < -360 and \
+                elif self.__ball.distance(self.l_paddle) < MAX_DIS and L_POS < ball_xcor < L_POS+25 and \
                         (90 < ball_angle < 270):
                     self.__ball.bounce(is_hit_border=False)
 
