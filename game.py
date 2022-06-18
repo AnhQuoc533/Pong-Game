@@ -162,11 +162,10 @@ class PongGame:
         self.screen.ontimer(self.__mechanism, 1000//FPS)
 
     def play(self):
-        self.__mechanism()
-        self.screen.mainloop()
+        if self.n_rounds:
+            self.__mechanism()
+            self.screen.mainloop()
 
 
 if __name__ == '__main__':
-    game = PongGame()
-    if game is not None:
-        game.play()
+    PongGame().play()
