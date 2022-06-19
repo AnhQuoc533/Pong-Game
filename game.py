@@ -130,7 +130,7 @@ class PongGame:
 
             # Ball is out of bound
             ball_xcor = self.__ball.xcor()
-            if abs(ball_xcor) > 420:
+            if not (L_POS-35 < ball_xcor < R_POS+35):
                 time.sleep(0.5)
                 winner = 0 if ball_xcor > 0 else 1
                 self.score.increase_score(winner)
