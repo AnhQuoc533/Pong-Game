@@ -20,7 +20,7 @@ for icon in BALL_ICONS:
 class Ball(turtle.Turtle):
 
     def __init__(self):
-        self.speed = 0
+        self.move_speed = 0
 
         super().__init__(random.choice(BALL_ICONS))
         self.penup()
@@ -32,7 +32,7 @@ class Ball(turtle.Turtle):
         self.setheading(starting_angle)
 
     def move(self):
-        self.forward(8 + self.speed)
+        self.forward(8 + self.move_speed)
 
     def bounce(self, is_hit_border: bool):
         # print('incidence:', self.heading())  # For testing
@@ -40,12 +40,12 @@ class Ball(turtle.Turtle):
             self.setheading(360 - self.heading())
         else:
             self.setheading(180 - self.heading() + random.uniform(-5, 5))  # Make the reflection angle stochastic
-            self.speed += 1
+            self.move_speed += 1
         # print('reflection:', self.heading())  # For testing
 
     def restart(self, winner: int):
         self.home()
-        self.speed = 0
+        self.move_speed = 0
         self.shape(random.choice(BALL_ICONS))
 
         # Left paddle win
