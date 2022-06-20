@@ -130,14 +130,11 @@ class PongGame:
                 if self.score.l_score + self.score.r_score == self.n_rounds:
                     self.score.finalize()
                     self.end()
-                    self.screen.update()
                     self.screen.onkey(self.reset, 'Return')  # 'enter' key
 
                 else:
                     # Restart the ball
                     self.__ball.restart(winner)
-                    self.screen.update()
-                    time.sleep(1)
 
             else:
                 # Detect collision with right paddle

@@ -47,8 +47,8 @@ class Ball(turtle.Turtle):
         # print('reflection:', self.heading())  # For testing
 
     def restart(self, winner: int):
-        self.home()
         self.move_speed = 1000
+        self.home()
         self.shape(random.choice(BALL_ICONS))
 
         # Left paddle win
