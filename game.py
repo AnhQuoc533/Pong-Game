@@ -23,7 +23,7 @@ class PongGame:
         self.screen.tracer(0)  # Turn off automatic screen update
 
         self.score = Scoreboard()
-        self.__ball = Ball()
+        self.ball = Ball()
         self.r_paddle = Paddle(R_POS)
         self.l_paddle = Paddle(L_POS)
 
@@ -114,12 +114,12 @@ class PongGame:
 
     def __ball_animation(self):
         if self.is_paused is False:
-            self.__ball.move()
-            ball_xcor = self.__ball.xcor()
+            self.ball.move()
+            ball_xcor = self.ball.xcor()
 
             # Detect collision with wall
-            if abs(self.__ball.ycor()) > BORDER:
-                self.__ball.bounce(is_hit_border=True)
+            if abs(self.ball.ycor()) > BORDER:
+                self.ball.bounce(is_hit_border=True)
 
             # Ball is out of bound
             elif not (L_POS - 35 < ball_xcor < R_POS + 35):
@@ -136,21 +136,21 @@ class PongGame:
 
                 # Restart the ball
                 else:
-                    self.__ball.restart(winner)
+                    self.ball.restart(winner)
 
             else:
                 # Detect collision with right paddle
-                ball_angle = self.__ball.heading()
-                if self.__ball.distance(self.r_paddle) < MAX_DIS and R_POS - 25 < ball_xcor < R_POS and \
-                        (self.__ball.heading() < 90 or ball_angle > 270):
-                    self.__ball.bounce(is_hit_border=False)
+                ball_angle = self.ball.heading()
+                if self.ball.distance(self.r_paddle) < MAX_DIS and R_POS - 25 < ball_xcor < R_POS and \
+                        (self.ball.heading() < 90 or ball_angle > 270):
+                    self.ball.bounce(is_hit_border=False)
 
                 # Detect collision with left paddle
-                elif self.__ball.distance(self.l_paddle) < MAX_DIS and L_POS < ball_xcor < L_POS + 25 and \
+                elif self.ball.distance(self.l_paddle) < MAX_DIS and L_POS < ball_xcor < L_POS + 25 and \
                         (90 < ball_angle < 270):
-                    self.__ball.bounce(is_hit_border=False)
+                    self.ball.bounce(is_hit_border=False)
 
-        self.screen.ontimer(self.__ball_animation, self.__ball.move_speed)
+        self.screen.ontimer(self.__ball_animation, self.ball.move_speed)
 
     def __main_animation(self):
         if self.is_paused is False:
