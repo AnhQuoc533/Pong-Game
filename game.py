@@ -68,11 +68,11 @@ class PongGame:
             self.keys_pressed[key] = [False, function]
 
     def __key_pressed(self, event):
-        """ Callback for KeyPress event listener and set key pressed state to True."""
+        """Callback for KeyPress event listener and set key pressed state to True."""
         self.keys_pressed[event.keysym][0] = True
 
     def __key_released(self, event):
-        """ Callback for KeyRelease event listener and set key pressed state to False."""
+        """Callback for KeyRelease event listener and set key pressed state to False."""
         self.keys_pressed[event.keysym][0] = False
 
     def __change_text(self):
@@ -115,25 +115,27 @@ class PongGame:
     def __ball_animation(self):
         if self.is_paused is False:
             self.__ball.move()
+            ball_xcor = self.__ball.xcor()
 
             # Detect collision with wall
             if abs(self.__ball.ycor()) > BORDER:
                 self.__ball.bounce(is_hit_border=True)
 
             # Ball is out of bound
-            ball_xcor = self.__ball.xcor()
-            if not (L_POS - 35 < ball_xcor < R_POS + 35):
+            elif not (L_POS - 35 < ball_xcor < R_POS + 35):
+                self.screen.update()
                 time.sleep(0.5)
                 winner = 0 if ball_xcor > 0 else 1
                 self.score.increase_score(winner)
 
+                # End game
                 if self.score.l_score + self.score.r_score == self.n_rounds:
                     self.score.finalize()
                     self.end()
                     self.screen.onkey(self.reset, 'Return')  # 'enter' key
 
+                # Restart the ball
                 else:
-                    # Restart the ball
                     self.__ball.restart(winner)
 
             else:
