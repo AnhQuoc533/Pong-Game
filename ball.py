@@ -1,17 +1,20 @@
 import turtle
 import random
+import playsound
+import threading
+MAX_SPEED = 2
 BALL_ICONS = [
-    'ball/baseball.gif',
-    'ball/basketball.gif',
-    'ball/billiard.gif',
-    'ball/dodgeball.gif',
-    'ball/fireball.gif',
-    'ball/football.gif',
-    'ball/golf.gif',
-    'ball/sun.gif',
-    'ball/tennis.gif',
-    'ball/volleyball.gif',
-    'ball/pea.gif'
+    'gfx/baseball.gif',
+    'gfx/basketball.gif',
+    'gfx/billiard.gif',
+    'gfx/dodgeball.gif',
+    'gfx/fireball.gif',
+    'gfx/football.gif',
+    'gfx/golf.gif',
+    'gfx/sun.gif',
+    'gfx/tennis.gif',
+    'gfx/volleyball.gif',
+    'gfx/pea.gif'
 ]
 for icon in BALL_ICONS:
     turtle.addshape(icon)
@@ -37,12 +40,19 @@ class Ball(turtle.Turtle):
             self.move_speed = 20
 
     def bounce(self, is_hit_border: bool):
+        def bounce_sfx():
+            try:
+                playsound.playsound('sfx/bounce.wav', block=False)
+            except playsound.PlaysoundException:
+                pass
+
+        threading.Thread(target=bounce_sfx).start()
         # print('incidence:', self.heading())  # For testing
         if is_hit_border:
             self.setheading(360 - self.heading())
         else:
             self.setheading(180 - self.heading() + random.uniform(-5, 5))  # Make the reflection angle stochastic
-            if self.move_speed > 1:
+            if self.move_speed > MAX_SPEED:
                 self.move_speed -= 1
         # print('reflection:', self.heading())  # For testing
 
