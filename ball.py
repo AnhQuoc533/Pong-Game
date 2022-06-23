@@ -36,7 +36,7 @@ class Ball(turtle.Turtle):
 
     def move(self):
         self.forward(8)
-        if self.move_speed == 1000:
+        if self.move_speed > 20:
             self.move_speed = 20
 
     def bounce(self, is_hit_border: bool):
@@ -46,15 +46,16 @@ class Ball(turtle.Turtle):
             except playsound.PlaysoundException:
                 pass
 
-        threading.Thread(target=bounce_sfx).start()
-        # print('incidence:', self.heading())  # For testing
+        threading.Thread(target=bounce_sfx, daemon=True).start()
+        # print('incidence:', self.heading())  # Debugging
         if is_hit_border:
             self.setheading(360 - self.heading())
         else:
-            self.setheading(180 - self.heading() + random.uniform(-5, 5))  # Make the reflection angle stochastic
+            self.setheading(180 - self.heading())
             if self.move_speed > MAX_SPEED:
                 self.move_speed -= 1
-        # print('reflection:', self.heading())  # For testing
+                # print(self.move_speed)  # Debugging
+        # print('reflection:', self.heading())  # Debugging
 
     def restart(self, winner: int):
         self.move_speed = 1000
