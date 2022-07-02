@@ -40,13 +40,13 @@ class Ball(turtle.Turtle):
             self.move_speed = 20
 
     def bounce(self, is_hit_border: bool):
-        def bounce_sfx():
-            try:
-                playsound.playsound('sfx/bounce.wav', block=False)
-            except playsound.PlaysoundException:
-                pass
-
-        threading.Thread(target=bounce_sfx, daemon=True).start()
+        # def bounce_sfx():
+        #     try:
+        #         playsound.playsound('sfx/bounce.wav', block=False)
+        #     except playsound.PlaysoundException:
+        #         pass
+        #
+        # threading.Thread(target=bounce_sfx, daemon=True).start()
         # print('incidence:', self.heading())  # Debugging
         if is_hit_border:
             self.setheading(360 - self.heading())
