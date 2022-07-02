@@ -19,7 +19,7 @@ class PongGame:
         self.screen.setup(width=795, height=630)
         self.screen.cv._rootwindow.resizable(False, False)  # Access Tkinter function from Canvas screen
         self.screen.title('Pong Game')
-        self.screen.bgpic('bg.gif')
+        self.screen.bgpic('gfx/bg.gif')
         self.screen.tracer(0)  # Turn off automatic screen update
 
         self.score = Scoreboard()
